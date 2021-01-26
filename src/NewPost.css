@@ -1,0 +1,15 @@
+.NewPost {
+    width: 50%;
+    margin: auto;
+    text-align: left;
+    border-style: solid;
+    border-color: darkgray;
+    border-width: 1px;
+    border-radius: 3px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#cancel-button {
+    margin-left: 5px;
+}
