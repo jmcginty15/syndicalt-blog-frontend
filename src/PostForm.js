@@ -5,14 +5,16 @@ import {
     Label,
     Input
 } from 'reactstrap';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import samplePosts from './samplePosts';
+import { useSelector, useDispatch } from 'react-redux';
+import { addPost, editPost } from './actions';
 import './PostForm.css';
 
 const PostForm = () => {
+    const dispatch = useDispatch();
     const { id } = useParams();
-    const post = samplePosts[id];
+    const post = useSelector(state => state.posts[id]);
 
     const [formData, setFormData] = useState({
         title: post ? post.title : '',
@@ -24,15 +26,31 @@ const PostForm = () => {
 
     const submitPost = (evt) => {
         evt.preventDefault();
-        console.log('submitted');
-        history.push('/blog');
+        if (post) {
+            dispatch(editPost(id, {
+                ...formData,
+                userId: 69,
+                bannerImage: 'https://blog.apastyle.org/.a/6a01157041f4e3970b01b7c82eb758970b-320wi',
+                createdAt: '42069',
+                updatedAt: '42069'
+            }));
+            history.push(`/blog/posts/${id}`)
+        } else {
+            dispatch(addPost({
+                ...formData,
+                userId: 69,
+                bannerImage: 'https://blog.apastyle.org/.a/6a01157041f4e3970b01b7c82eb758970b-320wi',
+                createdAt: '42069',
+                updatedAt: '42069'
+            }));
+            history.push('/blog');
+        }
     }
-
     const cancelPost = () => post ? history.push(`/blog/posts/${id}`) : history.push('/blog');
-
     const handleChange = (evt) => {
         const field = evt.target.name;
-        const value = evt.target.value;
+        let value = evt.target.value;
+        if (field === 'body' && evt.nativeEvent.inputType === 'insertNewLine') value = `${formData.body}\n`;
         const newFormData = {
             ...formData,
             [field]: value
@@ -59,7 +77,7 @@ const PostForm = () => {
                     <Label for="body">Body</Label>
                     <Input type="textarea" name="body" autoComplete="off" placeholder="Post content" value={formData.body} onChange={handleChange} />
                 </FormGroup>
-                <Button type="submit" color="primary">Submit</Button>
+                <Button type="submit" color="primary">{post ? 'Save' : 'Submit'}</Button>
                 <Button type="button" color="danger" id="cancel-button" onClick={cancelPost}>Cancel</Button>
             </Form>
         </div>

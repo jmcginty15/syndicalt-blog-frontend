@@ -24,7 +24,7 @@ const NavBar = () => {
     return (
         <div className="NavBar">
             <Navbar color="dark" dark expand="md" fixed="top">
-                <NavbarBrand href="/">SyndicALT</NavbarBrand>
+                <NavbarBrand href="/">{'{S}yndicALT'}</NavbarBrand>
                 <NavbarToggler onClick={toggleOpen} />
                 <Collapse isOpen={open} navbar>
                     <Nav className="mr-auto" navbar>

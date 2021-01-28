@@ -1,6 +1,14 @@
-const { DELETE_POST, DELETE_COMMENT, EDIT_COMMENT, ADD_COMMENT } = require("./actionTypes");
+const {
+    DELETE_POST,
+    DELETE_COMMENT,
+    EDIT_COMMENT,
+    ADD_COMMENT,
+    ADD_POST,
+    EDIT_POST
+} = require("./actionTypes");
 
-let i = 6;
+let cid = 6;
+let pid = 6;
 
 const removePost = (id) => {
     return {
@@ -31,14 +39,44 @@ const editComment = (id, body) => {
 }
 
 const addComment = (comment) => {
-    i += 1;
+    cid += 1;
     return {
         type: ADD_COMMENT,
         payload: {
             comment: comment,
-            id: i
+            id: cid
         }
     }
 }
 
-module.exports = { removePost, removeComment, editComment, addComment };
+const addPost = (post) => {
+    pid += 1;
+    return {
+        type: ADD_POST,
+        payload: {
+            post: post,
+            id: pid
+        }
+    }
+}
+
+const editPost = (id, post) => {
+    return {
+        type: EDIT_POST,
+        payload: {
+            id: id,
+            post: {
+                ...post
+            }
+        }
+    }
+}
+
+module.exports = {
+    removePost,
+    removeComment,
+    editComment,
+    addComment,
+    addPost,
+    editPost
+};

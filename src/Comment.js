@@ -12,21 +12,33 @@ import { removeComment, editComment } from './actions';
 import './Comment.css';
 
 const Comment = ({ id, comment }) => {
+    const [shiftPressed, setShiftPressed] = useState(false);
     const [editing, setEditing] = useState(false);
     const [commentText, setCommentText] = useState(comment.body);
     const dispatch = useDispatch();
 
     const startEdit = () => setEditing(true);
-    const cancelEdit = () => setEditing(false);
+    const cancelEdit = () => {
+        setCommentText(comment.body);
+        setEditing(false);
+    }
     const saveEdit = () => {
         dispatch(editComment(id, commentText));
         setEditing(false);
     }
     const deleteComment = () => dispatch(removeComment(id));
-    const handleChange = (evt) => setCommentText(evt.target.value);
+    const handleChange = (evt) => {
+        if (evt.nativeEvent.inputType !== 'insertLineBreak') setCommentText(evt.target.value);
+        else if (shiftPressed) setCommentText(`${commentText}\n`);
+    }
+    const shiftDown = (evt) => { if (evt.key === 'Shift') setShiftPressed(true) }
+    const shiftUp = (evt) => { if (evt.key === 'Shift') setShiftPressed(false) }
+    const enterComment = (evt) => { if (!shiftPressed && (evt.key === 'Enter' || evt.key === 'Return')) saveEdit() }
+
+    const text = comment.body.split('\n');
 
     return (
-        <div className="Comment">
+        <div className="Comment" onKeyDown={shiftDown} onKeyUp={shiftUp}>
             <Card>
                 <CardBody>
                     <div className="Comment-titles">
@@ -48,12 +60,12 @@ const Comment = ({ id, comment }) => {
                     {editing ? (
                         <div className="Comment-input">
                             <CardText>
-                                <Input type="textarea" name="commentText" autoComplete="off" placeholder="Add a comment" value={commentText} onChange={handleChange} />
+                                <Input type="textarea" name="commentText" autoComplete="off" placeholder="Add a comment" value={commentText} onChange={handleChange} onKeyPress={enterComment} />
                             </CardText>
                         </div>
                     ) : (
                             <div>
-                                <CardText>{comment.body}</CardText>
+                                {text.map(p => <CardText>{p}</CardText>)}
                             </div>
                         )}
                 </CardBody>

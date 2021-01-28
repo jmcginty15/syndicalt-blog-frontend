@@ -24,6 +24,8 @@ const PostDetails = () => {
         history.push('/blog');
     }
 
+    const text = post.body.split('\n');
+
     return (
         <div className="PostDetails">
             <Card>
@@ -36,14 +38,14 @@ const PostDetails = () => {
                         <CardSubtitle tag="h4" className="mb-2 text-muted">{post.subtitle}</CardSubtitle>
                     </div>
                     <div className="PostDetails-titles-right">
-                        <CardSubtitle tag="h6"><em>Posted {post.createdAt}</em></CardSubtitle>
-                        <CardSubtitle tag="h6"><em>Updated {post.updatedAt}</em></CardSubtitle>
+                        <CardSubtitle className="PostDetails-timestamp" tag="h6"><em>Posted {post.createdAt}</em></CardSubtitle>
+                        <CardSubtitle className="PostDetails-timestamp" tag="h6"><em>Updated {post.updatedAt}</em></CardSubtitle>
                         <Button className="PostDetails-button" outline color="primary" size="sm" onClick={editPost}>Edit</Button>
                         <Button className="PostDetails-button" outline color="danger" size="sm" onClick={deletePost}>Delete</Button>
                     </div>
                 </CardBody>
                 <CardBody>
-                    <CardText>{post.body}</CardText>
+                    {text.map(p => <CardText>{p}</CardText>)}
                 </CardBody>
                 <CardBody>
                     <Card>
