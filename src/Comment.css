@@ -1,0 +1,16 @@
+.Comment-titles {
+    display: grid;
+    grid-template-columns: 85% 15%;
+}
+
+.Comment-button-container {
+    text-align: right;
+}
+
+.Comment-button {
+    margin-left: 5px;
+}
+
+.Comment-input {
+    margin-top: 10px;
+}

@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import NavBar from './NavBar';
-import NewPost from './NewPost';
+import Home from './Home';
+import PostForm from './PostForm';
+import PostList from './PostList';
 import PostDetails from './PostDetails';
 import './App.css';
 
@@ -11,16 +13,19 @@ function App() {
         <NavBar />
         <Switch>
           <Route exact path="/">
-            <h1>Homepage</h1>
+            <Home />
           </Route>
           <Route exact path="/blog">
-            <h1>List of posts here</h1>
+            <PostList />
           </Route>
-          <Route exact path="/blog/new">
-            <NewPost />
-          </Route>
-          <Route path="/blog/posts/:id">
+          <Route exact path="/blog/posts/:id">
             <PostDetails />
+          </Route>
+          <Route exact path="/blog/posts/:id/edit">
+            <PostForm />
+          </Route>
+          <Route exact path="/blog/new-post">
+            <PostForm />
           </Route>
           <Redirect to="/" />
         </Switch>

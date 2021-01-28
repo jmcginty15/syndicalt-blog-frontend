@@ -1,0 +1,12 @@
+.CommentForm-titles {
+    display: grid;
+    grid-template-columns: 85% 15%;
+}
+
+.CommentForm-button-container {
+    text-align: right;
+}
+
+.CommentForm-input {
+    margin-top: 10px;
+}

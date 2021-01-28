@@ -1,4 +1,4 @@
-.NewPost {
+.PostForm {
     width: 50%;
     margin: auto;
     text-align: left;
@@ -7,7 +7,7 @@
     border-width: 1px;
     border-radius: 3px;
     padding: 10px;
-    margin-top: 20px;
+    margin-top: 10%;
 }
 
 #cancel-button {

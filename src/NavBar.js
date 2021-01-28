@@ -23,7 +23,7 @@ const NavBar = () => {
 
     return (
         <div className="NavBar">
-            <Navbar color="dark" dark expand="md">
+            <Navbar color="dark" dark expand="md" fixed="top">
                 <NavbarBrand href="/">SyndicALT</NavbarBrand>
                 <NavbarToggler onClick={toggleOpen} />
                 <Collapse isOpen={open} navbar>
@@ -39,7 +39,7 @@ const NavBar = () => {
                                 <DropdownItem onClick={() => followLink('/blog')}>
                                     Posts
                                 </DropdownItem>
-                                <DropdownItem onClick={() => followLink('/blog/new')}>
+                                <DropdownItem onClick={() => followLink('/blog/new-post')}>
                                     New post
                                 </DropdownItem>
                                 <DropdownItem divider />

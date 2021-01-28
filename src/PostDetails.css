@@ -1,0 +1,35 @@
+.PostDetails {
+    width: 75%;
+    margin: auto;
+    margin-bottom: 10%;
+    margin-top: 10%;
+    text-align: left;
+}
+
+.PostDetails-banner {
+    align-content: center;
+    height: 200px;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.PostDetails-banner-img {
+    transform: translate(0, -50%);
+}
+
+.PostDetails-titles {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.PostDetails-titles-right {
+    text-align: right;
+    padding-top: 10px;
+}
+
+.PostDetails-button {
+    margin-left: 5px;
+    margin-top: 5px;
+}
