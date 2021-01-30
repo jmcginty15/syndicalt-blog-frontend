@@ -9,12 +9,13 @@ import { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { addPost, editPost } from './actions';
+import { findItem } from './helpers';
 import './PostForm.css';
 
 const PostForm = () => {
     const dispatch = useDispatch();
     const { id } = useParams();
-    const post = useSelector(state => state.posts[id]);
+    const post = useSelector(state => findItem(id, state.posts));
 
     const [formData, setFormData] = useState({
         title: post ? post.title : '',

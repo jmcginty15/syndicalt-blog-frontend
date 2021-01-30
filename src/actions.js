@@ -1,13 +1,19 @@
 const {
-    DELETE_POST,
-    DELETE_COMMENT,
-    EDIT_COMMENT,
-    ADD_COMMENT,
+    LOAD_POST,
+    LOAD_POSTS,
     ADD_POST,
-    EDIT_POST
+    EDIT_POST,
+    DELETE_POST,
+    CLEAR_CURRENT_POST,
+    ADD_COMMENT,
+    EDIT_COMMENT,
+    DELETE_COMMENT,
+    LOGIN,
+    LOGOUT
 } = require("./actionTypes");
+const axios = require('axios');
+const BASE_URL = 'http://localhost:3001';
 
-let cid = 6;
 let pid = 6;
 
 const removePost = (id) => {
@@ -20,10 +26,17 @@ const removePost = (id) => {
 }
 
 const removeComment = (id) => {
-    return {
-        type: DELETE_COMMENT,
-        payload: {
-            id: id
+    return async (dispatch) => {
+        try {
+            await axios.delete(`${BASE_URL}/api/v1/comments/${id}`);
+            dispatch({
+                type: DELETE_COMMENT,
+                payload: {
+                    id: id
+                }
+            });
+        } catch (err) {
+            console.log(err);
         }
     }
 }
@@ -39,12 +52,17 @@ const editComment = (id, body) => {
 }
 
 const addComment = (comment) => {
-    cid += 1;
-    return {
-        type: ADD_COMMENT,
-        payload: {
-            comment: comment,
-            id: cid
+    return async (dispatch) => {
+        try {
+            const res = await axios.post(`${BASE_URL}/api/v1/posts/${comment.postId}/comments`, comment);
+            dispatch({
+                type: ADD_COMMENT,
+                payload: {
+                    comment: res.data.data
+                }
+            });
+        } catch (err) {
+            console.log(err);
         }
     }
 }
@@ -72,11 +90,104 @@ const editPost = (id, post) => {
     }
 }
 
+const loadPost = (id) => {
+    return async (dispatch) => {
+        try {
+            const postRes = await axios.get(`${BASE_URL}/api/v1/posts/${id}`);
+            const commentRes = await axios.get(`${BASE_URL}/api/v1/posts/${id}/comments`);
+            dispatch({
+                type: LOAD_POST,
+                payload: {
+                    currentPost: {
+                        ...postRes.data.data,
+                        comments: commentRes.data.data
+                    }
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+const loadPosts = () => {
+    return async (dispatch) => {
+        try {
+            const res = await axios.get(`${BASE_URL}/api/v1/posts`);
+            dispatch({
+                type: LOAD_POSTS,
+                payload: {
+                    posts: res.data.data
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+const clearCurrentPost = () => {
+    return {
+        type: CLEAR_CURRENT_POST
+    }
+}
+
+const registerUser = (user) => {
+    return async (dispatch) => {
+        try {
+            const res = await axios.post(`${BASE_URL}/api/v1/auth/register`, user);
+            delete user.password;
+            delete user.confirmPassword;
+            dispatch({
+                type: LOGIN,
+                payload: {
+                    user: {
+                        ...user,
+                        token: res.data.token
+                    }
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+const login = (email, password) => {
+    return async (dispatch) => {
+        try {
+            const loginRes = await axios.post(`${BASE_URL}/api/v1/auth/login`, { email: email, password: password });
+            const token = loginRes.data.token;
+            const userRes = await axios.post(`${BASE_URL}/api/v1/auth/me`, {}, { headers: { authorization: `Bearer ${token}` } });
+            dispatch({
+                type: LOGIN,
+                payload: {
+                    user: { ...userRes.data.data }
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+const logout = () => {
+    return {
+        type: LOGOUT
+    }
+}
+
 module.exports = {
     removePost,
     removeComment,
     editComment,
     addComment,
     addPost,
-    editPost
+    editPost,
+    loadPost,
+    loadPosts,
+    clearCurrentPost,
+    registerUser,
+    login,
+    logout
 };

@@ -7,12 +7,12 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
-const PostCard = ({ id, post }) => {
+const PostCard = ({ post }) => {
     return (
         <div className="PostCard">
             <Card>
                 <CardBody>
-                    <CardTitle tag="h5"><Link to={`/blog/posts/${id}`}>{post.title}</Link></CardTitle>
+                    <CardTitle tag="h5"><Link to={`/blog/posts/${post.id}`}>{post.title}</Link></CardTitle>
                     <CardSubtitle tag="h6" className="mb-2 text-muted">{post.subtitle}</CardSubtitle>
                 </CardBody>
                 <img width="100%" src={post.bannerImage} alt={post.title} />

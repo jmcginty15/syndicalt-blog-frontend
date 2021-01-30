@@ -1,4 +1,3 @@
-import samplePosts from './samplePosts';
 import sampleComments from './sampleComments';
 import {
     ADD_COMMENT,
@@ -6,19 +5,56 @@ import {
     DELETE_POST,
     EDIT_COMMENT,
     ADD_POST,
-    EDIT_POST
+    EDIT_POST,
+    LOAD_POSTS,
+    LOAD_POST,
+    CLEAR_CURRENT_POST,
+    LOGIN,
+    LOGOUT
 } from './actionTypes';
+import { findItem, findIndex } from './helpers';
 
 const INITIAL_STATE = {
-    posts: samplePosts,
+    posts: [],
+    currentPost: null,
+    loggedInUser: null,
     comments: sampleComments
 };
 
 const rootReducer = (state = INITIAL_STATE, action) => {
-    const posts = { ...state.posts };
+    const posts = [ ...state.posts ];
+    const currentPost = state.currentPost ? { ...state.currentPost } : null;
     const comments = { ...state.comments };
 
     switch (action.type) {
+        case LOGIN:
+            return {
+                ...state,
+                loggedInUser: { ...action.payload.user }
+            };
+        case LOGOUT:
+            return {
+                ...state,
+                loggedInUser: null
+            }
+        case LOAD_POST:
+            const newCurrentPost = { ...action.payload.currentPost };
+            newCurrentPost.bannerImage = newCurrentPost.banner_image;
+            delete newCurrentPost.banner_image;
+            return {
+                ...state,
+                currentPost: newCurrentPost
+            };
+        case LOAD_POSTS:
+            const newPosts = [ ...action.payload.posts ];
+            for (let post of newPosts) {
+                post.bannerImage = post.banner_image;
+                delete post.banner_image;
+            }
+            return {
+                ...state,
+                posts: newPosts
+            };
         case ADD_POST:
             const newPost = action.payload.post;
             return {
@@ -43,14 +79,17 @@ const rootReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 posts: posts
             };
-        case ADD_COMMENT:
-            const newComment = action.payload.comment;
+        case CLEAR_CURRENT_POST:
             return {
                 ...state,
-                comments: {
-                    ...comments,
-                    [action.payload.id]: newComment
-                }
+                currentPost: null
+            };
+        case ADD_COMMENT:
+            const newComment = action.payload.comment;
+            currentPost.comments.push(newComment);
+            return {
+                ...state,
+                currentPost: currentPost
             };
         case EDIT_COMMENT:
             comments[action.payload.id].body = action.payload.body;
@@ -59,10 +98,11 @@ const rootReducer = (state = INITIAL_STATE, action) => {
                 comments: comments
             };
         case DELETE_COMMENT:
-            delete comments[action.payload.id];
+            const idx = findIndex(action.payload.id, currentPost.comments);
+            currentPost.comments.splice(idx, 1);
             return {
                 ...state,
-                comments: comments
+                currentPost: currentPost
             };
         default:
             return { ...state };

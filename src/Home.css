@@ -1,3 +1,28 @@
 .Home {
     margin-top: 10%;
 }
+
+.Home-card {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    text-align: left;
+    justify-content: top;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.Home-card-container {
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.Home-form-container {
+    padding-left: 20px;
+    padding-right: 20px;
+}

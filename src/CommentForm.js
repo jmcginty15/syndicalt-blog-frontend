@@ -18,11 +18,9 @@ const CommentForm = ({ postId }) => {
 
     const postComment = () => {
         const newComment = {
+            name: 'Logged in username',
             body: commentText,
-            postId: +postId,
-            userId: 69,
-            createdAt: '42069',
-            updatedAt: '42069'
+            postId: postId,
         };
         dispatch(addComment(newComment));
         setCommentText('');

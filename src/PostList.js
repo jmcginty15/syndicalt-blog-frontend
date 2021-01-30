@@ -1,14 +1,20 @@
 import PostCard from './PostCard';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { loadPosts } from './actions';
 import './PostList.css';
 
 const PostList = () => {
+    const dispatch = useDispatch();
     const posts = useSelector(state => state.posts);
-    const postKeys = Object.keys(posts);
+
+    useEffect(() => {
+        dispatch(loadPosts());
+    }, [dispatch]);
 
     return (
         <div className="PostList">
-            {postKeys.map(key => <PostCard key={key} id={key} post={posts[key]} />)}
+            {posts.map(post => <PostCard key={post.id} post={post} />)}
         </div>
     )
 }

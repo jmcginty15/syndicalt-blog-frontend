@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { removeComment, editComment } from './actions';
 import './Comment.css';
 
-const Comment = ({ id, comment }) => {
+const Comment = ({ comment }) => {
     const [shiftPressed, setShiftPressed] = useState(false);
     const [editing, setEditing] = useState(false);
     const [commentText, setCommentText] = useState(comment.body);
@@ -23,10 +23,10 @@ const Comment = ({ id, comment }) => {
         setEditing(false);
     }
     const saveEdit = () => {
-        dispatch(editComment(id, commentText));
-        setEditing(false);
+        // dispatch(editComment(id, commentText));
+        // setEditing(false);
     }
-    const deleteComment = () => dispatch(removeComment(id));
+    const deleteComment = () => dispatch(removeComment(comment._id));
     const handleChange = (evt) => {
         if (evt.nativeEvent.inputType !== 'insertLineBreak') setCommentText(evt.target.value);
         else if (shiftPressed) setCommentText(`${commentText}\n`);
