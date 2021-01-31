@@ -7,7 +7,7 @@ import {
     Input
 } from 'reactstrap';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addComment } from './actions';
 import './CommentForm.css';
 
@@ -15,10 +15,11 @@ const CommentForm = ({ postId }) => {
     const [shiftPressed, setShiftPressed] = useState(false);
     const [commentText, setCommentText] = useState('');
     const dispatch = useDispatch();
+    const loggedInUser = useSelector(state => state.loggedInUser);
 
     const postComment = () => {
         const newComment = {
-            name: 'Logged in username',
+            name: `${loggedInUser.firstName} ${loggedInUser.lastName}`,
             body: commentText,
             postId: postId,
         };

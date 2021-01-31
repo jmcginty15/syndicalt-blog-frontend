@@ -1,14 +1,17 @@
 import {
     Card,
     CardBody,
+    CardTitle,
     CardSubtitle,
     CardText,
     Button,
     Input
 } from 'reactstrap';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { removeComment, editComment } from './actions';
+import { parseDate } from './helpers';
 import './Comment.css';
 
 const Comment = ({ comment }) => {
@@ -16,6 +19,7 @@ const Comment = ({ comment }) => {
     const [editing, setEditing] = useState(false);
     const [commentText, setCommentText] = useState(comment.body);
     const dispatch = useDispatch();
+    const loggedInUser = useSelector(state => state.loggedInUser);
 
     const startEdit = () => setEditing(true);
     const cancelEdit = () => {
@@ -23,10 +27,10 @@ const Comment = ({ comment }) => {
         setEditing(false);
     }
     const saveEdit = () => {
-        // dispatch(editComment(id, commentText));
-        // setEditing(false);
+        dispatch(editComment(comment._id, commentText, loggedInUser.token));
+        setEditing(false);
     }
-    const deleteComment = () => dispatch(removeComment(comment._id));
+    const deleteComment = () => dispatch(removeComment(comment._id, loggedInUser.token));
     const handleChange = (evt) => {
         if (evt.nativeEvent.inputType !== 'insertLineBreak') setCommentText(evt.target.value);
         else if (shiftPressed) setCommentText(`${commentText}\n`);
@@ -36,6 +40,7 @@ const Comment = ({ comment }) => {
     const enterComment = (evt) => { if (!shiftPressed && (evt.key === 'Enter' || evt.key === 'Return')) saveEdit() }
 
     const text = comment.body.split('\n');
+    const userName = comment.name.split(' ');
 
     return (
         <div className="Comment" onKeyDown={shiftDown} onKeyUp={shiftUp}>
@@ -43,7 +48,7 @@ const Comment = ({ comment }) => {
                 <CardBody>
                     <div className="Comment-titles">
                         <div>
-                            <CardSubtitle tag="h6">User id {comment.userId}</CardSubtitle>
+                            <CardTitle tag="h5"><Link to={`/users/${userName[0]}-${userName[1]}`}>{comment.name}</Link></CardTitle>
                         </div>
                         {editing ? (
                             <div className="Comment-button-container">
@@ -52,10 +57,14 @@ const Comment = ({ comment }) => {
                             </div>
                         ) : (
                                 <div className="Comment-button-container">
-                                    <Button className="Comment-button" outline color="primary" size="sm" onClick={startEdit}>Edit</Button>
-                                    <Button className="Comment-button" outline color="danger" size="sm" onClick={deleteComment}>Delete</Button>
+                                    {`${loggedInUser.firstName} ${loggedInUser.lastName}` === comment.name ? <Button className="Comment-button" outline color="primary" size="sm" onClick={startEdit}>Edit</Button> : null}
+                                    {`${loggedInUser.firstName} ${loggedInUser.lastName}` === comment.name ? <Button className="Comment-button" outline color="danger" size="sm" onClick={deleteComment}>Delete</Button> : null}
                                 </div>
                             )}
+                        <div className="Comment-subtitles">
+                            <CardSubtitle className="Comment-timestamp" tag="h6"><em>Posted {parseDate(comment.createdAt)}</em></CardSubtitle>
+                            <CardSubtitle className="Comment-timestamp" tag="h6"><em>Updated {parseDate(comment.updatedAt)}</em></CardSubtitle>
+                        </div>
                     </div>
                     {editing ? (
                         <div className="Comment-input">

@@ -14,23 +14,31 @@ const {
     REGISTER_ERROR
 } = require("./actionTypes");
 const axios = require('axios');
+
+// change this to your server location
 const BASE_URL = 'http://localhost:3001';
 
-let pid = 6;
-
-const removePost = (id) => {
-    return {
-        type: DELETE_POST,
-        payload: {
-            id: id
+const removePost = (id, token) => {
+    return async (dispatch) => {
+        try {
+            await axios.delete(`${BASE_URL}/api/v1/posts/${id}`, { headers: { authorization: `Bearer ${token}` } });
+            dispatch({
+                type: DELETE_POST,
+                payload: {
+                    id: id
+                }
+            });
+        } catch (err) {
+            console.log(err);
         }
     }
 }
 
-const removeComment = (id) => {
+const removeComment = (id, token) => {
+    console.log(token);
     return async (dispatch) => {
         try {
-            await axios.delete(`${BASE_URL}/api/v1/comments/${id}`);
+            await axios.delete(`${BASE_URL}/api/v1/comments/${id}`, { headers: { authorization: `Bearer ${token}` } });
             dispatch({
                 type: DELETE_COMMENT,
                 payload: {
@@ -43,12 +51,20 @@ const removeComment = (id) => {
     }
 }
 
-const editComment = (id, body) => {
-    return {
-        type: EDIT_COMMENT,
-        payload: {
-            id: id,
-            body: body
+const editComment = (id, body, token) => {
+    console.log(token);
+    return async (dispatch) => {
+        try {
+            await axios.put(`${BASE_URL}/api/v1/comments/${id}`, { body: body }, { headers: { authorization: `Bearer ${token}` } });
+            dispatch({
+                type: EDIT_COMMENT,
+                payload: {
+                    id: id,
+                    body: body
+                }
+            });
+        } catch (err) {
+            console.log(err);
         }
     }
 }
@@ -69,25 +85,41 @@ const addComment = (comment) => {
     }
 }
 
-const addPost = (post) => {
-    pid += 1;
-    return {
-        type: ADD_POST,
-        payload: {
-            post: post,
-            id: pid
+const addPost = (post, token) => {
+    post.banner_image = post.bannerImage;
+    return async (dispatch) => {
+        try {
+            const res = await axios.post(`${BASE_URL}/api/v1/posts`, post, { headers: { authorization: `Bearer ${token}` } });
+            dispatch({
+                type: ADD_POST,
+                payload: {
+                    post: res.data.data,
+                }
+            });
+        } catch (err) {
+            console.log(err);
         }
     }
 }
 
-const editPost = (id, post) => {
-    return {
-        type: EDIT_POST,
-        payload: {
-            id: id,
-            post: {
-                ...post
-            }
+const editPost = (id, post, token) => {
+    post.banner_image = post.bannerImage;
+    return async (dispatch) => {
+        try {
+            const postRes = await axios.put(`${BASE_URL}/api/v1/posts/${id}`, post, { headers: { authorization: `Bearer ${token}` } });
+            const commentRes = await axios.get(`${BASE_URL}/api/v1/posts/${id}/comments`);
+            dispatch({
+                type: EDIT_POST,
+                payload: {
+                    id: id,
+                    post: {
+                        ...postRes.data.data,
+                        comments: commentRes.data.data
+                    }
+                }
+            });
+        } catch (err) {
+            console.log(err);
         }
     }
 }
@@ -137,15 +169,15 @@ const clearCurrentPost = () => {
 const registerUser = (user) => {
     return async (dispatch) => {
         try {
-            const res = await axios.post(`${BASE_URL}/api/v1/auth/register`, user);
-            delete user.password;
-            delete user.confirmPassword;
+            const loginRes = await axios.post(`${BASE_URL}/api/v1/auth/register`, user);
+            const token = loginRes.data.token;
+            const userRes = await axios.post(`${BASE_URL}/api/v1/auth/me`, {}, { headers: { authorization: `Bearer ${token}` } });
             dispatch({
                 type: LOGIN,
                 payload: {
                     user: {
-                        ...user,
-                        token: res.data.token
+                        ...userRes.data.data,
+                        token: token
                     }
                 }
             });

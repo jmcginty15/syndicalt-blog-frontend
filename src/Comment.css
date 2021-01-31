@@ -3,6 +3,14 @@
     grid-template-columns: 85% 15%;
 }
 
+.Comment-subtitles{
+    margin-bottom: 10px;
+}
+
+.Comment-timestamp {
+    padding-bottom: 3px;
+}
+
 .Comment-button-container {
     text-align: right;
 }

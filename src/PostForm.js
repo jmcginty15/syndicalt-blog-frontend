@@ -10,12 +10,14 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { addPost, editPost } from './actions';
 import { findItem } from './helpers';
+import Unauthorized from './Unauthorized';
 import './PostForm.css';
 
 const PostForm = () => {
     const dispatch = useDispatch();
     const { id } = useParams();
     const post = useSelector(state => findItem(id, state.posts));
+    const loggedInUser = useSelector(state => state.loggedInUser);
 
     const [formData, setFormData] = useState({
         title: post ? post.title : '',
@@ -30,20 +32,16 @@ const PostForm = () => {
         if (post) {
             dispatch(editPost(id, {
                 ...formData,
-                userId: 69,
-                bannerImage: 'https://blog.apastyle.org/.a/6a01157041f4e3970b01b7c82eb758970b-320wi',
-                createdAt: '42069',
-                updatedAt: '42069'
-            }));
-            history.push(`/blog/posts/${id}`)
+                userId: loggedInUser._id,
+                bannerImage: 'https://blog.apastyle.org/.a/6a01157041f4e3970b01b7c82eb758970b-320wi'
+            }, loggedInUser.token));
+            history.push(`/blog/posts/${id}`);
         } else {
             dispatch(addPost({
                 ...formData,
-                userId: 69,
-                bannerImage: 'https://blog.apastyle.org/.a/6a01157041f4e3970b01b7c82eb758970b-320wi',
-                createdAt: '42069',
-                updatedAt: '42069'
-            }));
+                userId: loggedInUser._id,
+                bannerImage: 'https://blog.apastyle.org/.a/6a01157041f4e3970b01b7c82eb758970b-320wi'
+            }, loggedInUser.token));
             history.push('/blog');
         }
     }
@@ -59,7 +57,7 @@ const PostForm = () => {
         setFormData(newFormData);
     }
 
-    return (
+    if (loggedInUser) return (
         <div className="PostForm">
             <Form onSubmit={submitPost}>
                 <FormGroup>
@@ -78,11 +76,12 @@ const PostForm = () => {
                     <Label for="body">Body</Label>
                     <Input type="textarea" name="body" autoComplete="off" placeholder="Post content" value={formData.body} onChange={handleChange} />
                 </FormGroup>
-                <Button type="submit" color="primary">{post ? 'Save' : 'Submit'}</Button>
-                <Button type="button" color="danger" id="cancel-button" onClick={cancelPost}>Cancel</Button>
+                <Button type="submit" color="primary" outline>{post ? 'Save' : 'Submit'}</Button>
+                <Button type="button" color="danger" outline id="cancel-button" onClick={cancelPost}>Cancel</Button>
             </Form>
         </div>
     )
+    else return <Unauthorized />
 }
 
 export default PostForm;

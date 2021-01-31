@@ -13,7 +13,7 @@ import {
     NavbarText
 } from 'reactstrap';
 import { useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import './NavBar.css';
 
