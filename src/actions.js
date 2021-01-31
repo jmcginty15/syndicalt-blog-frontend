@@ -9,7 +9,9 @@ const {
     EDIT_COMMENT,
     DELETE_COMMENT,
     LOGIN,
-    LOGOUT
+    LOGOUT,
+    LOGIN_ERROR,
+    REGISTER_ERROR
 } = require("./actionTypes");
 const axios = require('axios');
 const BASE_URL = 'http://localhost:3001';
@@ -148,7 +150,15 @@ const registerUser = (user) => {
                 }
             });
         } catch (err) {
-            console.log(err);
+            let errMessage = err.response.data.error;
+            if (typeof errMessage !== 'string') errMessage = errMessage[0].message;
+            if (errMessage === 'Must be six characters long') errMessage = 'Password must be at least six characters long';
+            dispatch({
+                type: REGISTER_ERROR,
+                payload: {
+                    message: errMessage
+                }
+            });
         }
     }
 }
@@ -162,11 +172,16 @@ const login = (email, password) => {
             dispatch({
                 type: LOGIN,
                 payload: {
-                    user: { ...userRes.data.data }
+                    user: {
+                        ...userRes.data.data,
+                        token: token
+                    }
                 }
             });
         } catch (err) {
-            console.log(err);
+            dispatch({
+                type: LOGIN_ERROR
+            })
         }
     }
 }

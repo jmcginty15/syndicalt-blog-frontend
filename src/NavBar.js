@@ -13,9 +13,12 @@ import {
     NavbarText
 } from 'reactstrap';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import './NavBar.css';
 
 const NavBar = () => {
+    const loggedInUser = useSelector(state => state.loggedInUser);
     const history = useHistory();
     const [open, setOpen] = useState(false);
     const toggleOpen = () => setOpen(!open);
@@ -31,23 +34,30 @@ const NavBar = () => {
                         <NavItem>
                             <NavLink href="https://github.com/syndicalt/syndicalt-main">GitHub</NavLink>
                         </NavItem>
-                        <UncontrolledDropdown nav inNavbar>
-                            <DropdownToggle className="NavBar" nav caret>
-                                Blog
-                            </DropdownToggle>
-                            <DropdownMenu right>
-                                <DropdownItem onClick={() => followLink('/blog')}>
-                                    Posts
-                                </DropdownItem>
-                                <DropdownItem onClick={() => followLink('/blog/new-post')}>
-                                    New post
-                                </DropdownItem>
-                                <DropdownItem divider />
-                                <DropdownItem>
-                                    Something else
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
+                        {loggedInUser ? (
+                            <UncontrolledDropdown nav inNavbar>
+                                <DropdownToggle className="NavBar" nav caret>
+                                    Blog
+                                </DropdownToggle>
+                                <DropdownMenu right>
+                                    <DropdownItem onClick={() => followLink('/blog')}>
+                                        Posts
+                                    </DropdownItem>
+                                    <DropdownItem onClick={() => followLink('/blog/new-post')}>
+                                        New post
+                                    </DropdownItem>
+                                    <DropdownItem divider />
+                                    <DropdownItem>
+                                        Something else
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </UncontrolledDropdown>
+                        ) : null}
+                        {loggedInUser ? (
+                            <NavItem>
+                                <NavLink className="NavBar-link" onClick={() => followLink(`/users/${loggedInUser.firstName}-${loggedInUser.lastName}`)}><i className="fa fa-user" style={{ fontSize: '20px' }} /> {loggedInUser.firstName} {loggedInUser.lastName}</NavLink>
+                            </NavItem>
+                        ) : null}
                     </Nav>
                     <NavbarText>A based catchphrase</NavbarText>
                 </Collapse>

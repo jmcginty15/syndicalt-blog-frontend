@@ -5,7 +5,7 @@
 .Home-card {
     display: grid;
     grid-template-columns: 50% 50%;
-    width: fit-content;
+    width: 100%;
     height: fit-content;
     margin: auto;
     text-align: left;
@@ -15,7 +15,7 @@
 }
 
 .Home-card-container {
-    width: fit-content;
+    width: 90%;
     height: fit-content;
     margin: auto;
     margin-top: 20px;
@@ -23,6 +23,7 @@
 }
 
 .Home-form-container {
+    width: 100%;
     padding-left: 20px;
     padding-right: 20px;
 }

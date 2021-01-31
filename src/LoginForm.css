@@ -1,5 +1,9 @@
 .LoginForm {
-    width: fit-content;
+    width: 100%;
     height: fit-content;
     margin: auto;
+}
+
+#LoginForm-button {
+    margin-left: 5px;
 }

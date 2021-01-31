@@ -13,4 +13,11 @@ const findIndex = (id, list) => {
     }
     return null;
 }
-module.exports = { findItem, findIndex };
+
+const parseName = (nameObj) => {
+    const { name } = nameObj;
+    const nameArr = name.split('-');
+    return { first: nameArr[0], last: nameArr[1] };
+}
+
+module.exports = { findItem, findIndex, parseName };

@@ -4,6 +4,7 @@ import Home from './Home';
 import PostForm from './PostForm';
 import PostList from './PostList';
 import PostDetails from './PostDetails';
+import UserDetails from './UserDetails';
 import './App.css';
 
 function App() {
@@ -14,6 +15,9 @@ function App() {
         <Switch>
           <Route exact path="/">
             <Home />
+          </Route>
+          <Route exact path="/users/:name">
+            <UserDetails />
           </Route>
           <Route exact path="/blog">
             <PostList />

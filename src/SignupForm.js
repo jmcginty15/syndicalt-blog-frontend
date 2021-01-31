@@ -11,11 +11,12 @@ import {
 } from 'reactstrap';
 import { useState } from 'react';
 import { registerUser } from './actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './LoginForm.css';
 
 const SignupForm = () => {
     const dispatch = useDispatch();
+    const registerError = useSelector(state => state.registerError);
     const [mismatch, setMismatch] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
@@ -35,6 +36,7 @@ const SignupForm = () => {
     const handleSubmit = (evt) => {
         evt.preventDefault();
         if (formData.password === formData.confirmPassword) {
+            setMismatch(false);
             const user = {
                 ...formData,
                 role: 'guest'
@@ -72,6 +74,7 @@ const SignupForm = () => {
                             <Input type="password" name="confirmPassword" placeholder="Confirm password" autoComplete="off" required value={formData.confirmPassword} onChange={handleChange} />
                         </FormGroup>
                         {mismatch ? <Alert color="danger">Passwords don't match!</Alert> : null}
+                        {registerError ? <Alert color="danger">{registerError}</Alert> : null}
                         <Button type="submit" color="primary" outline>Sign Up</Button>
                     </Form>
                 </CardBody>

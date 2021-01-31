@@ -13,7 +13,7 @@ const Home = () => {
 
     return (
         <div className="Home">
-            <h1>Welcome to SyndicALT!</h1>
+            <h1>{'Welcome to {S}yndicALT!'}</h1>
             <h3>The place you come when you get yeeted from Twitter</h3>
             {loggedInUser ? (
                 <Card className="Home-card-container">

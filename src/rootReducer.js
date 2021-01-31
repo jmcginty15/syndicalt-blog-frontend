@@ -10,14 +10,20 @@ import {
     LOAD_POST,
     CLEAR_CURRENT_POST,
     LOGIN,
-    LOGOUT
+    LOGOUT,
+    LOGIN_ERROR,
+    REGISTER_ERROR
 } from './actionTypes';
 import { findItem, findIndex } from './helpers';
 
+const storageUser = localStorage.getItem('currentUser');
+const currentUser = storageUser ? JSON.parse(storageUser) : null;
 const INITIAL_STATE = {
     posts: [],
     currentPost: null,
-    loggedInUser: null,
+    loggedInUser: currentUser,
+    loginError: false,
+    registerError: null,
     comments: sampleComments
 };
 
@@ -28,15 +34,29 @@ const rootReducer = (state = INITIAL_STATE, action) => {
 
     switch (action.type) {
         case LOGIN:
+            localStorage.setItem('currentUser', JSON.stringify(action.payload.user));
             return {
                 ...state,
-                loggedInUser: { ...action.payload.user }
+                loggedInUser: { ...action.payload.user },
+                loginError: false,
+                registerError: null
             };
         case LOGOUT:
+            localStorage.removeItem('currentUser');
             return {
                 ...state,
                 loggedInUser: null
-            }
+            };
+        case LOGIN_ERROR:
+            return {
+                ...state,
+                loginError: true
+            };
+        case REGISTER_ERROR:
+            return {
+                ...state,
+                registerError: action.payload.message
+            };
         case LOAD_POST:
             const newCurrentPost = { ...action.payload.currentPost };
             newCurrentPost.bannerImage = newCurrentPost.banner_image;
